@@ -1,8 +1,8 @@
 package org.ujar.quarkus.restful.logger;
 
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.core.MultivaluedMap;
 import java.security.Principal;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.core.MultivaluedMap;
 
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.reactive.server.ServerRequestFilter;

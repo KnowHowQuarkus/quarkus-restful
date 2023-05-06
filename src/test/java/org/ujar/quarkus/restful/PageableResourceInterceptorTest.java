@@ -1,50 +1,26 @@
 package org.ujar.quarkus.restful;
 
-import javax.interceptor.InvocationContext;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.QueryParam;
+import jakarta.interceptor.InvocationContext;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.InternalServerErrorException;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.JRE;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
+@EnabledOnJre({ JRE.JAVA_18 })
 class PageableResourceInterceptorTest {
+  private InvocationContext context;
 
-  @Mock
-  InvocationContext context;
+  static final PageableResourceInterceptor CUT = new PageableResourceInterceptor();
 
-  private interface FooInterface {
-    void doSomething(
-        @QueryParam("page") @DefaultValue("1") Integer page,
-        @QueryParam("size") @DefaultValue("50") Integer size);
+  @BeforeEach
+  void setUp() {
+    this.context = Mockito.mock(InvocationContext.class);
   }
-
-  private static class Foo implements FooInterface {
-    public void doSomething(Integer page, Integer size) {
-    }
-  }
-
-  private static class FooNoInterface {
-    public void doSomething(Integer start, Integer end) {
-    }
-  }
-
-  private interface FooInterfaceMissingAnnotations {
-    void doSomething(Integer start, Integer end);
-  }
-
-  private static class FooMissingAnnotations implements FooInterfaceMissingAnnotations {
-    public void doSomething(Integer start, Integer end) {
-    }
-  }
-
-  private static final PageableResourceInterceptor CUT = new PageableResourceInterceptor();
 
   @Test
   void validate() throws Exception {
@@ -54,40 +30,40 @@ class PageableResourceInterceptorTest {
   }
 
   @Test
-  void validate_InternalServerError_NoInterface() throws Exception {
+  void validate_InternalServerError_NoInterface() {
     Mockito.doReturn(FooNoInterface.class.getMethods()[0]).when(context).getMethod();
     Assertions.assertThrows(InternalServerErrorException.class, () -> CUT.validateQueryParams(context));
   }
 
   @Test
-  void validate_InternalServerError_MissingAnnotations() throws Exception {
+  void validate_InternalServerError_MissingAnnotations() {
     Mockito.doReturn(FooMissingAnnotations.class.getMethods()[0]).when(context).getMethod();
     Assertions.assertThrows(InternalServerErrorException.class, () -> CUT.validateQueryParams(context));
   }
 
   @Test
-  void validate_InternalServerError_NoDefaultValues() throws Exception {
+  void validate_InternalServerError_NoDefaultValues() {
     Mockito.doReturn(Foo.class.getMethods()[0]).when(context).getMethod();
     Mockito.doReturn(new Object[] {null, null}).when(context).getParameters();
     Assertions.assertThrows(InternalServerErrorException.class, () -> CUT.validateQueryParams(context));
   }
 
   @Test
-  void validate_BadRequest_PageSize() throws Exception {
+  void validate_BadRequest_PageSize() {
     Mockito.doReturn(Foo.class.getMethods()[0]).when(context).getMethod();
     Mockito.doReturn(new Object[] {1, 150}).when(context).getParameters();
     Assertions.assertThrows(BadRequestException.class, () -> CUT.validateQueryParams(context));
   }
 
   @Test
-  void validate_BadRequest_NegativePageNumber() throws Exception {
+  void validate_BadRequest_NegativePageNumber() {
     Mockito.doReturn(Foo.class.getMethods()[0]).when(context).getMethod();
     Mockito.doReturn(new Object[] {-1, 1}).when(context).getParameters();
     Assertions.assertThrows(BadRequestException.class, () -> CUT.validateQueryParams(context));
   }
 
   @Test
-  void validate_BadRequest_NegativePageSize() throws Exception {
+  void validate_BadRequest_NegativePageSize() {
     Mockito.doReturn(Foo.class.getMethods()[0]).when(context).getMethod();
     Mockito.doReturn(new Object[] {1, -1}).when(context).getParameters();
     Assertions.assertThrows(BadRequestException.class, () -> CUT.validateQueryParams(context));

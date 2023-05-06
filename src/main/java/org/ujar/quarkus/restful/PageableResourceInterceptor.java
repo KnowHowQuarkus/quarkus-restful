@@ -1,14 +1,14 @@
 package org.ujar.quarkus.restful;
 
+import jakarta.annotation.Priority;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.ws.rs.QueryParam;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import javax.annotation.Priority;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.QueryParam;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -88,7 +88,7 @@ public class PageableResourceInterceptor {
 
   @AroundInvoke
   @SuppressWarnings("PMD.SignatureDeclareThrowsException")
-  Object validateQueryParams(final InvocationContext ctx) throws Exception {
+  void validateQueryParams(final InvocationContext ctx) throws Exception {
 
     // Identify which parameters are the start/end parameters.
     final var method = findMethodOnInterface(ctx);
@@ -104,7 +104,7 @@ public class PageableResourceInterceptor {
     assertParamsHaveValues(page, size);
     assertParamsHaveValidValues(page, size);
 
-    return ctx.proceed();
+    ctx.proceed();
   }
 
   /*
@@ -115,15 +115,13 @@ public class PageableResourceInterceptor {
    */
   private Method findMethodOnInterface(final InvocationContext context) throws NoSuchMethodException {
     final var m = context.getMethod();
+    log.error("Exam {}", m.getDeclaringClass().getInterfaces());
 
     final int numOfInterfaces = m.getDeclaringClass().getInterfaces().length;
     if (numOfInterfaces == 1) {
       return m.getDeclaringClass().getInterfaces()[0].getMethod(m.getName(), m.getParameterTypes());
     } else {
-      // The RESTFul controller class implements multiple interfaces. This method could be
-      // updated to support that, but it's extra work that's unnecessary at the time
-      // of writing.
-      throw new InternalServerErrorException("RESTFul controller class must implement an auto-generated JAX-RS interface");
+      throw new InternalServerErrorException("RESTFul controller class must implement an auto-generated JAX-RS interface.");
     }
   }
 }
