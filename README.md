@@ -20,7 +20,7 @@ This library will automatically validate those parameters and will reject reques
 
 ### Exceptions / error responses
 
-Applications MAY make use of exceptions in `org.ujar.quarkus.restful.exception`. These are automatically turned into HTTP responses as follows:
+Applications MAY make use of exceptions in `dev.knowhowto.quarkus.restful.exception`. These are automatically turned into HTTP responses as follows:
 
 | Exception                      | HTTP response code | Situation                                                             |
 |--------------------------------|--------------------|-----------------------------------------------------------------------|
