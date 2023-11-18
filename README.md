@@ -2,9 +2,11 @@
 
 ### Paging
 
-REST endpoints that return all entities, such as `GET /users`, SHOULD support paging. Java methods implementing pageable endpoints SHOULD be annotated with `@PageableResource`. If used, Integer query params `page` and `size` MUST be defined.
+REST endpoints that return all entities, such as `GET /users`, SHOULD support paging. Java methods implementing pageable endpoints SHOULD be annotated with `@PageableResource`. If used,
+Integer query params `page` and `size` MUST be defined.
 
-This library will automatically validate those parameters and will reject requests with a 400 Bad Request where the client is attempting to fetch more than 100 entities in a single query. If the Java method does not have `@QueryParam("page")` or `@QueryParam("size")` then a 500 Internal Server Error will be generated to indicate a programming bug.
+This library will automatically validate those parameters and will reject requests with a 400 Bad Request where the client is attempting to fetch more than 100 entities in a single query. If
+the Java method does not have `@QueryParam("page")` or `@QueryParam("size")` then a 500 Internal Server Error will be generated to indicate a programming bug.
 
 ```java
     @GET
@@ -26,7 +28,6 @@ Applications MAY make use of exceptions in `dev.knowhowto.quarkus.restful.except
 |--------------------------------|--------------------|-----------------------------------------------------------------------|
 | `ConflictException`            | 409                | Another client has performed a conflicting operation on the entity.   |
 | `UnprocessableEntityException` | 422                | The operation cannot be performed on the entity in its current state. |
-
 
 ### Versioning
 
