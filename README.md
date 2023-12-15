@@ -22,7 +22,7 @@ the Java method does not have `@QueryParam("page")` or `@QueryParam("size")` the
 
 ### Exceptions / error responses
 
-Applications MAY make use of exceptions in `dev.knowhowto.quarkus.restful.exception`. These are automatically turned into HTTP responses as follows:
+Applications MAY make use of exceptions in `org.iqkv.quarkus.restful.exception`. These are automatically turned into HTTP responses as follows:
 
 | Exception                      | HTTP response code | Situation                                                             |
 |--------------------------------|--------------------|-----------------------------------------------------------------------|
